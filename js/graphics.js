@@ -316,9 +316,9 @@ class SpriteRenderer {
         this.ctx.fillStyle = colorScheme.saddle;
         this.ctx.fillRect(x + width * 0.35, y + height * 0.42, width * 0.3, height * 0.12);
         
-        // Collar (colored, thicker, moved right)
+        // Collar (colored, thicker, positioned on neck)
         this.ctx.fillStyle = colorScheme.collar;
-        this.ctx.fillRect(x + width * 0.70, y + height * 0.3, width * 0.15, height * 0.08);
+        this.ctx.fillRect(x + width * 0.65, y + height * 0.3, width * 0.15, height * 0.08);
         
         // Number badge
         const badgeSize = Math.min(width * 0.15, 20);
