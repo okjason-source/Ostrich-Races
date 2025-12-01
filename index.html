@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="High-energy ostrich racing game with betting. Experience the opulent Billionaire Mindset!">
+    <meta name="theme-color" content="#FFD700">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ostrich Races">
+    
+    <title>Ostrich Races - Billionaire Mindset</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="./icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512x512.png">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>💸 OSTRICH RACES 💸</h1>
+            <div id="bankroll-display">
+                <span class="money-icon">💰</span>
+                <span id="bankroll-amount">$1,000,000</span>
+            </div>
+        </header>
+        
+        <div id="game-area">
+            <!-- Betting Interface -->
+            <div id="betting-panel" class="panel">
+                <div id="ostriches-list">
+                    <!-- Ostriches will be dynamically generated here -->
+                </div>
+                <div id="bet-controls">
+                    <div class="bet-type-selector">
+                        <label><input type="radio" name="bet-type" value="win" checked> Win</label>
+                        <label><input type="radio" name="bet-type" value="place"> Place</label>
+                        <label><input type="radio" name="bet-type" value="show"> Show</label>
+                    </div>
+                    <div class="bet-controls-row">
+                        <input type="number" id="bet-amount" placeholder="Bet amount" min="1" value="1000">
+                        <button id="place-bet-btn">Place Bet</button>
+                        <button id="clear-bet-btn">Clear</button>
+                    </div>
+                </div>
+                <div id="current-bets">
+                    <h3>Your Bets</h3>
+                    <div id="bets-list"></div>
+                </div>
+                
+                <!-- Exotic Bets Section -->
+                <div id="exotic-bets-section">
+                    <button id="exotic-toggle-btn" class="exotic-toggle">
+                        <span id="exotic-toggle-icon">▶</span> Exotic Bets
+                    </button>
+                    <div id="exotic-bets-panel" class="hidden">
+                        <div class="exotic-bet-type">
+                            <label>
+                                <input type="radio" name="exotic-type" value="exacta" checked>
+                                <strong>Exacta</strong> - Pick 1-2 in order
+                            </label>
+                        </div>
+                        <div class="exotic-bet-type">
+                            <label>
+                                <input type="radio" name="exotic-type" value="trifecta">
+                                <strong>Trifecta</strong> - Pick 1-3 in order
+                            </label>
+                        </div>
+                        <div class="exotic-bet-type">
+                            <label>
+                                <input type="radio" name="exotic-type" value="superfecta">
+                                <strong>Superfecta</strong> - Pick 1-4 in order
+                            </label>
+                        </div>
+                        <div class="exotic-bet-type">
+                            <label>
+                                <input type="radio" name="exotic-type" value="quinella">
+                                <strong>Quinella</strong> - Pick top 2
+                            </label>
+                        </div>
+                        
+                        <div id="exotic-selection">
+                            <h4>Select Positions</h4>
+                            <div id="exotic-picks">
+                                <select id="exotic-pos1" class="exotic-select">
+                                    <option value="">1st Place</option>
+                                </select>
+                                <select id="exotic-pos2" class="exotic-select">
+                                    <option value="">2nd Place</option>
+                                </select>
+                                <select id="exotic-pos3" class="exotic-select hidden">
+                                    <option value="">3rd Place</option>
+                                </select>
+                                <select id="exotic-pos4" class="exotic-select hidden">
+                                    <option value="">4th Place</option>
+                                </select>
+                            </div>
+                            <div class="exotic-amount">
+                                <input type="number" id="exotic-bet-amount" placeholder="Bet amount" min="1" value="1000">
+                            </div>
+                            <button id="place-exotic-btn" class="primary-btn">Place Exotic Bet</button>
+                        </div>
+                        
+                        <div id="exotic-bets-list"></div>
+                    </div>
+                </div>
+                
+                <button id="start-race-btn" class="primary-btn" disabled>Start Race</button>
+            </div>
+            
+            <!-- Race Canvas -->
+            <div id="race-area" class="panel">
+                <canvas id="game-canvas"></canvas>
+                <div id="race-info">
+                    <div id="race-status">Waiting for bets...</div>
+                    <div id="race-timer"></div>
+                </div>
+            </div>
+            
+            <!-- Results Panel -->
+            <div id="results-panel" class="panel hidden">
+                <h2>Race Results</h2>
+                <div id="finishing-order"></div>
+                <div id="payout-info"></div>
+                <button id="new-race-btn" class="primary-btn">New Race</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/graphics.js"></script>
+    <script src="js/ostrich.js"></script>
+    <script src="js/betting.js"></script>
+    <script src="js/exotic-betting.js"></script>
+    <script src="js/race.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swPath = './sw.js';
+                navigator.serviceWorker.register(swPath)
+                    .then((registration) => {
+                        console.log('ServiceWorker registration successful:', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker available
+                                    if (confirm('New version available! Reload to update?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+        
+        // Handle PWA install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // You can show a custom install button here
+            console.log('PWA install prompt available');
+        });
+    </script>
+</body>
+</html>
+

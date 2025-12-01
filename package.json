@@ -1,0 +1,24 @@
+{
+  "name": "ostrich-races",
+  "version": "1.0.0",
+  "description": "High-energy ostrich racing game with betting - Billionaire Mindset theme",
+  "main": "index.html",
+  "scripts": {
+    "generate-icons": "node generate-icons.js",
+    "serve": "python3 -m http.server 8000",
+    "serve:node": "npx http-server -p 8000"
+  },
+  "keywords": [
+    "game",
+    "pwa",
+    "ostrich",
+    "racing",
+    "betting"
+  ],
+  "author": "",
+  "license": "ISC",
+  "optionalDependencies": {
+    "canvas": "^2.11.2"
+  }
+}
+
