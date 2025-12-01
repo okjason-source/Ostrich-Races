@@ -255,6 +255,10 @@ class Game {
         document.getElementById('bet-amount').value = '1000';
         document.getElementById('exotic-bet-amount').value = '1000';
         
+        // Reset race status text
+        document.getElementById('race-status').textContent = 'Waiting for bets...';
+        document.getElementById('race-timer').textContent = '';
+        
         this.renderOstrichCards();
         this.updateUI();
         this.updateBetsDisplay();
