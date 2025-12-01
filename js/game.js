@@ -10,6 +10,10 @@ class Game {
         this.soundSystem = new SoundSystem();
         this.race = null;
         this.countdownInterval = null;
+        
+        // Cleanup tracking
+        this.animationFrameId = null;
+        this.isRaceActive = false;
     }
 
     initialize(canvas, renderer) {
@@ -19,6 +23,20 @@ class Game {
         this.updateUI();
         this.renderOstrichCards();
         this.setupExoticBets();
+    }
+
+    cleanup() {
+        // Clear any running countdown timer
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+            this.countdownInterval = null;
+        }
+        
+        // Cancel any running animation frame
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
     }
 
     updateBankroll(amount) {
@@ -73,6 +91,15 @@ class Game {
             return;
         }
 
+        // Prevent multiple races from starting
+        if (this.isRaceActive) {
+            return;
+        }
+        
+        // Clean up any existing timers
+        this.cleanup();
+        
+        this.isRaceActive = true;
         this.race.startCountdown();
         this.startCountdown();
     }
@@ -84,12 +111,18 @@ class Game {
         
         statusEl.textContent = 'Get ready...';
         
-        const interval = setInterval(() => {
+        // Clear any existing countdown
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+        }
+        
+        this.countdownInterval = setInterval(() => {
             countdownEl.textContent = countdown;
             countdown--;
             
             if (countdown < 0) {
-                clearInterval(interval);
+                clearInterval(this.countdownInterval);
+                this.countdownInterval = null;
                 this.race.startRace();
                 statusEl.textContent = 'Racing!';
                 countdownEl.textContent = '';
@@ -113,14 +146,22 @@ class Game {
             if (this.race.state === 'finished') {
                 this.finishRace();
             } else if (this.race.state === 'racing') {
-                requestAnimationFrame(loop);
+                this.animationFrameId = requestAnimationFrame(loop);
             }
         };
         
-        requestAnimationFrame(loop);
+        this.animationFrameId = requestAnimationFrame(loop);
     }
 
     finishRace() {
+        // Prevent multiple calls
+        if (!this.isRaceActive) {
+            return;
+        }
+        
+        this.isRaceActive = false;
+        this.cleanup();
+        
         const winner = this.race.getWinner();
         if (!winner) return;
         
@@ -236,6 +277,10 @@ class Game {
     }
 
     newRace() {
+        // Clean up any running timers/animations
+        this.cleanup();
+        this.isRaceActive = false;
+        
         // Reset everything
         this.ostrichManager.initializeOstriches();
         this.bettingSystem.clearAllBets();
