@@ -1,53 +1,18 @@
-# Ostrich Races - Billionaire Mindset 🐪💰
+# Ostrich Races - Billionaire Mindset 💸💰
 
 A high-energy, opulent ostrich racing game with betting mechanics. Experience the surreal luxury of the Billionaire Mindset theme!
 
 ## Features
 
-- 🐪 **8 Unique Ostriches**: Each with distinct colors, saddles, collars, and racing stats
+- 💸 **8 Unique Ostriches**: Each with distinct colors, saddles, collars, and racing stats
 - 💰 **Betting System**: Place wagers on your favorite ostriches with dynamic odds
-- 🎨 **16-bit Pixel Art Style**: Bright, clashing colors matching the opulent theme
+- 👾 **16-bit Pixel Art Style**: Bright, clashing colors matching the opulent theme
 - 📱 **Progressive Web App (PWA)**: Installable, works offline
 - 💾 **Local Storage**: Your bankroll and stats are saved automatically
 - 🏁 **Dynamic Racing**: Variable speeds, stamina, and random events
 
 ## Getting Started
 
-### Local Development
-
-1. **Serve the files**: Since this is a PWA, you need to serve it over HTTP/HTTPS (not file://)
-
-   Using Python 3:
-   ```bash
-   python3 -m http.server 8000
-   ```
-
-   Using Node.js (http-server):
-   ```bash
-   npx http-server -p 8000
-   ```
-
-   Using PHP:
-   ```bash
-   php -S localhost:8000
-   ```
-
-2. **Open in browser**: Navigate to `http://localhost:8000`
-
-3. **Install as PWA**: 
-   - Chrome/Edge: Look for the install icon in the address bar
-   - Safari (iOS): Tap Share → Add to Home Screen
-
-### Production Deployment
-
-Deploy to any static hosting service:
-- GitHub Pages
-- Netlify
-- Vercel
-- Firebase Hosting
-- Any web server with HTTPS
-
-**Important**: PWAs require HTTPS (except for localhost).
 
 ## Project Structure
 
@@ -107,30 +72,6 @@ The game captures the spirit of:
 - Opera
 
 ## Development Notes
-
-### Adding Icons
-
-Icons are generated from `ostrich-bird-shape-running.png`:
-
-**Browser Method (Recommended):**
-1. Open `generate-icons.html` in your browser
-2. Icons will auto-generate with opulent theme colors
-3. Click "Download All Icons" and save to the `icons/` folder
-
-**Command Line Method:**
-```bash
-npm install canvas  # Optional dependency
-npm run generate-icons
-```
-
-See `icons/README.md` for more details.
-
-### Customization
-
-- **Colors**: Edit `THEME_COLORS` in `js/utils.js`
-- **Ostrich Stats**: Modify `Ostrich` class in `js/ostrich.js`
-- **Race Length**: Adjust `raceLength` in `js/race.js`
-- **Starting Bankroll**: Change default in `js/storage.js`
 
 ## License
 
