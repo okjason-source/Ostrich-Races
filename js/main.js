@@ -58,12 +58,6 @@ function setupEventListeners() {
         }
     });
     
-    // Clear all bets button
-    document.getElementById('clear-bet-btn').addEventListener('click', () => {
-        game.clearAllBets();
-        betAmountInput.value = '1000';
-    });
-    
     // Exotic bets toggle
     document.getElementById('exotic-toggle-btn').addEventListener('click', () => {
         const panel = document.getElementById('exotic-bets-panel');
