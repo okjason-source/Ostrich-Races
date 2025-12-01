@@ -219,74 +219,106 @@ class SpriteRenderer {
         // Draw the colorized ostrich (already flipped)
         this.ctx.drawImage(tempCanvas, x, y + legOffset, width, scaledHeight);
         
-        // Add saddle overlay
-        const saddleY = y + scaledHeight * 0.4 + legOffset;
+        // Since ostrich is flipped, adjust x positions (mirrored)
+        // Original left (0.25) becomes right side after flip
+        
+        // Add saddle overlay (on the body - adjusted for flip)
+        const saddleY = y + scaledHeight * 0.5 + legOffset;
         const saddleHeight = scaledHeight * 0.15;
         this.ctx.fillStyle = colorScheme.saddle;
-        this.ctx.fillRect(x + width * 0.25, saddleY, width * 0.4, saddleHeight);
+        this.ctx.fillRect(x + width * 0.35, saddleY, width * 0.4, saddleHeight);
         
-        // Add collar
-        const collarY = y + scaledHeight * 0.15 + legOffset;
+        // Add collar (on the neck - adjusted for flip, thicker)
+        const collarY = y + scaledHeight * 0.25 + legOffset;
         this.ctx.fillStyle = colorScheme.collar;
-        this.ctx.fillRect(x + width * 0.15, collarY, width * 0.2, scaledHeight * 0.08);
+        this.ctx.fillRect(x + width * 0.70, collarY, width * 0.15, scaledHeight * 0.08);
         
         // Number badge on saddle
         const badgeSize = Math.min(width * 0.15, 20);
         this.ctx.fillStyle = '#000';
-        this.ctx.fillRect(x + width * 0.35, saddleY + 2, badgeSize, badgeSize);
+        this.ctx.fillRect(x + width * 0.45, saddleY + 2, badgeSize, badgeSize);
         this.ctx.fillStyle = '#FFD700';
         this.ctx.font = `bold ${badgeSize * 0.7}px Arial`;
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(number, x + width * 0.35 + badgeSize / 2, saddleY + badgeSize / 2 + 2);
+        this.ctx.fillText(number, x + width * 0.45 + badgeSize / 2, saddleY + badgeSize / 2 + 2);
     }
 
     drawSimpleOstrich(x, y, width, height, colorScheme, number, animationFrame) {
         // Simple side-view ostrich with animated legs (facing right)
+        // Realistic colors: brown/black body, white/pink neck/head/legs
         const legOffset = Math.sin(animationFrame * 0.3) * 5;
         const legOffset2 = Math.sin(animationFrame * 0.3 + Math.PI) * 5;
         
+        // Alternate between brown and black for body variety
+        const bodyColor = number % 2 === 0 ? '#654321' : '#2C1810'; // Brown or dark brown/black
+        const neckColor = number % 2 === 0 ? '#F5F5F5' : '#FFE4E1'; // White or light pink
+        
         // Body (oval)
-        this.ctx.fillStyle = colorScheme.color;
+        this.ctx.fillStyle = bodyColor;
         this.ctx.beginPath();
         this.ctx.ellipse(x + width * 0.5, y + height * 0.5, width * 0.3, height * 0.2, 0, 0, Math.PI * 2);
         this.ctx.fill();
         
-        // Long neck (positioned for facing right)
-        this.ctx.fillStyle = colorScheme.color;
+        // Long neck (positioned for facing right) - white/pink
+        this.ctx.fillStyle = neckColor;
         this.ctx.fillRect(x + width * 0.65, y + height * 0.1, width * 0.12, height * 0.45);
         
-        // Head (at the front/right)
+        // Head (at the front/right) - white/pink
         this.ctx.beginPath();
         this.ctx.ellipse(x + width * 0.71, y + height * 0.08, width * 0.12, height * 0.1, 0, 0, Math.PI * 2);
         this.ctx.fill();
         
-        // Beak (pointing right)
+        // Eyes - variety based on ostrich number (all black)
+        this.ctx.fillStyle = '#000';
+        const eyeX = x + width * 0.75;
+        const eyeY = y + height * 0.08;
+        const eyeSize = width * 0.02;
+        
+        if (number === 1 || number === 4 || number === 7) {
+            // Just dots
+            this.ctx.beginPath();
+            this.ctx.arc(eyeX, eyeY, eyeSize, 0, Math.PI * 2);
+            this.ctx.fill();
+        } else if (number === 2 || number === 5 || number === 8) {
+            // Just dashes
+            this.ctx.fillRect(eyeX - eyeSize * 1.5, eyeY - eyeSize * 0.5, eyeSize * 3, eyeSize);
+        } else {
+            // Dash merged with dot (numbers 3 and 6)
+            // Dot
+            this.ctx.beginPath();
+            this.ctx.arc(eyeX, eyeY, eyeSize, 0, Math.PI * 2);
+            this.ctx.fill();
+            // Dash extending from dot
+            this.ctx.fillRect(eyeX + eyeSize, eyeY - eyeSize * 0.5, eyeSize * 2, eyeSize);
+        }
+        
+        // Beak (pointing right) - orange for all
         this.ctx.fillStyle = '#FFA500';
         this.ctx.fillRect(x + width * 0.83, y + height * 0.08, width * 0.08, height * 0.03);
         
-        // Long animated legs (front leg)
-        this.ctx.fillStyle = colorScheme.color;
+        // Long animated legs (front leg) - white/pink
+        this.ctx.fillStyle = neckColor;
         this.ctx.save();
         this.ctx.translate(x + width * 0.55, y + height * 0.65);
         this.ctx.rotate(legOffset * 0.1);
         this.ctx.fillRect(-width * 0.04, 0, width * 0.08, height * 0.35);
         this.ctx.restore();
         
-        // Long animated legs (back leg)
+        // Long animated legs (back leg) - white/pink
         this.ctx.save();
         this.ctx.translate(x + width * 0.40, y + height * 0.65);
         this.ctx.rotate(legOffset2 * 0.1);
         this.ctx.fillRect(-width * 0.04, 0, width * 0.08, height * 0.35);
         this.ctx.restore();
         
-        // Saddle
+        // Saddle (colored)
         this.ctx.fillStyle = colorScheme.saddle;
         this.ctx.fillRect(x + width * 0.35, y + height * 0.42, width * 0.3, height * 0.12);
         
-        // Collar
+        // Collar (colored, thicker, moved right)
         this.ctx.fillStyle = colorScheme.collar;
-        this.ctx.fillRect(x + width * 0.65, y + height * 0.3, width * 0.12, height * 0.08);
+        this.ctx.fillRect(x + width * 0.70, y + height * 0.3, width * 0.15, height * 0.08);
         
         // Number badge
         const badgeSize = Math.min(width * 0.15, 20);
