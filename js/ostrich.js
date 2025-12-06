@@ -12,7 +12,7 @@ const OSTRICH_COLORS = [
 ];
 
 class Ostrich {
-    constructor(number, colorScheme) {
+    constructor(number, colorScheme, currentTimePeriod = null) {
         this.number = number;
         this.name = colorScheme.name;
         this.colorScheme = colorScheme; // Store the full color scheme object
@@ -25,6 +25,10 @@ class Ostrich {
         this.stamina = randomFloat(0.5, 1.0);   // Wider range: 0.5 to 1.0 (was 0.7 to 1.0)
         this.consistency = randomFloat(0.4, 1.0); // Wider range: 0.4 to 1.0 (was 0.6 to 1.0)
         
+        // Time preference - each ostrich has a preferred time of day
+        const timePeriods = ['night', 'dawn', 'morning', 'day', 'afternoon', 'dusk', 'evening'];
+        this.preferredTime = timePeriods[Math.floor(Math.random() * timePeriods.length)];
+        
         // Race state
         this.position = 0; // 0 to 1 (0 = start, 1 = finish)
         this.speed = 0;
@@ -36,9 +40,14 @@ class Ostrich {
         // Animation state
         this.animationFrame = 0;
         
+        // Calculate time modifier based on current time vs preferred time
+        const timeModifier = this.calculateTimeModifier(currentTimePeriod);
+        
         // Calculate odds based on stats with more dramatic spread
         // Weight speed more heavily as it's most important
-        const weightedAvg = (this.baseSpeed * 0.5) + (this.stamina * 0.3) + (this.consistency * 0.2);
+        // Apply time modifier to weighted average (affects odds)
+        let weightedAvg = (this.baseSpeed * 0.5) + (this.stamina * 0.3) + (this.consistency * 0.2);
+        weightedAvg = weightedAvg * timeModifier; // Apply time of day effect
         
         // New formula for wider odds distribution (1:1 to 12:1)
         // Better stats = lower odds
@@ -59,6 +68,48 @@ class Ostrich {
         } else {
             this.odds = 12; // Extreme longshot
         }
+    }
+
+    calculateTimeModifier(currentTimePeriod) {
+        if (!currentTimePeriod) {
+            // If no time period provided, no modifier
+            return 1.0;
+        }
+        
+        // If current time matches preferred time, boost performance
+        if (currentTimePeriod === this.preferredTime) {
+            return 1.15; // 15% boost when racing at preferred time
+        }
+        
+        // Check if it's an opposite time (night vs day, morning vs evening, etc.)
+        const oppositePairs = [
+            ['night', 'day'],
+            ['dawn', 'dusk'],
+            ['morning', 'evening'],
+            ['afternoon', 'night']
+        ];
+        
+        for (const [time1, time2] of oppositePairs) {
+            if ((this.preferredTime === time1 && currentTimePeriod === time2) ||
+                (this.preferredTime === time2 && currentTimePeriod === time1)) {
+                return 0.90; // 10% penalty for opposite time
+            }
+        }
+        
+        // Adjacent times get a small penalty
+        const timeOrder = ['night', 'dawn', 'morning', 'day', 'afternoon', 'dusk', 'evening'];
+        const preferredIndex = timeOrder.indexOf(this.preferredTime);
+        const currentIndex = timeOrder.indexOf(currentTimePeriod);
+        const distance = Math.abs(preferredIndex - currentIndex);
+        
+        if (distance === 1) {
+            return 0.95; // 5% penalty for adjacent time
+        } else if (distance === 2) {
+            return 0.98; // 2% penalty for two steps away
+        }
+        
+        // Default: no modifier
+        return 1.0;
     }
 
     update(deltaTime, raceLength) {
@@ -109,13 +160,13 @@ class Ostrich {
 class OstrichManager {
     constructor() {
         this.ostriches = [];
-        this.initializeOstriches();
+        // Don't initialize here - wait for time period to be available
     }
 
-    initializeOstriches() {
+    initializeOstriches(currentTimePeriod = null) {
         this.ostriches = [];
         for (let i = 0; i < 8; i++) {
-            const ostrich = new Ostrich(i + 1, OSTRICH_COLORS[i]);
+            const ostrich = new Ostrich(i + 1, OSTRICH_COLORS[i], currentTimePeriod);
             this.ostriches.push(ostrich);
         }
     }

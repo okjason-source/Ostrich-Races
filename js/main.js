@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
     dayNightCycle = new DayNightCycle(canvas);
     
     game = new Game();
-    game.initialize(canvas, renderer);
+    game.initialize(canvas, renderer, dayNightCycle);
     
     // Set up event listeners
     setupEventListeners();

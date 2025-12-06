@@ -19,9 +19,15 @@ class Game {
         this.bmTabGrantedThisSession = false;
     }
 
-    initialize(canvas, renderer) {
+    initialize(canvas, renderer, dayNightCycle = null) {
         this.canvas = canvas;
         this.renderer = renderer;
+        this.dayNightCycle = dayNightCycle; // Store reference to day/night cycle
+        
+        // Initialize ostriches with current time period
+        const currentTimePeriod = this.dayNightCycle ? this.dayNightCycle.getCurrentTimePeriod() : null;
+        this.ostrichManager.initializeOstriches(currentTimePeriod);
+        
         this.race = new Race(this.ostrichManager, renderer, canvas, this.soundSystem);
         this.updateUI();
         this.renderOstrichCards();
@@ -302,8 +308,11 @@ class Game {
         this.cleanup();
         this.isRaceActive = false;
         
-        // Reset everything
-        this.ostrichManager.initializeOstriches();
+        // Get current time period for odds calculation
+        const currentTimePeriod = this.dayNightCycle ? this.dayNightCycle.getCurrentTimePeriod() : null;
+        
+        // Reset everything with current time period
+        this.ostrichManager.initializeOstriches(currentTimePeriod);
         this.bettingSystem.clearAllBets();
         this.exoticBettingSystem.clearAllExoticBets();
         this.race.state = 'waiting';

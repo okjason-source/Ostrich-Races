@@ -11,6 +11,30 @@ class DayNightCycle {
         }, 60000);
     }
     
+    getCurrentTimePeriod() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const timeDecimal = hours + (minutes / 60); // 0-24 as decimal
+        
+        // Return time period as string for odds calculation
+        if (timeDecimal >= 0 && timeDecimal < 5) {
+            return 'night'; // 0-5
+        } else if (timeDecimal >= 5 && timeDecimal < 7) {
+            return 'dawn'; // 5-7
+        } else if (timeDecimal >= 7 && timeDecimal < 10) {
+            return 'morning'; // 7-10
+        } else if (timeDecimal >= 10 && timeDecimal < 16) {
+            return 'day'; // 10-16
+        } else if (timeDecimal >= 16 && timeDecimal < 18) {
+            return 'afternoon'; // 16-18
+        } else if (timeDecimal >= 18 && timeDecimal < 20) {
+            return 'dusk'; // 18-20
+        } else {
+            return 'evening'; // 20-24
+        }
+    }
+
     getTimeBasedGradient() {
         const now = new Date();
         const hours = now.getHours();
