@@ -179,7 +179,7 @@ class Race {
         const finishLineX = trackStartX + trackWidth + ostrichWidth;
         this.renderer.ctx.save();
         this.renderer.ctx.fillStyle = '#FFFFFF';
-        const squareSize = 15;
+        const squareSize = 10;
         const numSquares = Math.ceil((canvasRect.height - 60) / squareSize);
         for (let i = 0; i < numSquares; i++) {
             const y = 30 + i * squareSize;
