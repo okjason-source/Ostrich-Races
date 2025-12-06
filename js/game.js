@@ -14,6 +14,9 @@ class Game {
         // Cleanup tracking
         this.animationFrameId = null;
         this.isRaceActive = false;
+        
+        // B-M Tab tracking - only one per session, never on first bet
+        this.bmTabGrantedThisSession = false;
     }
 
     initialize(canvas, renderer) {
@@ -43,9 +46,14 @@ class Game {
         this.bankroll = Math.max(0, amount);
         
         // Check if player needs a B-M Tab (bailout)
+        // Rules: Only one per session, never on the very first bet
         const minBet = 1000000;
-        if (this.bankroll < minBet) {
+        const isFirstBet = this.stats.racesWatched === 0;
+        const canGrantBMTab = !this.bmTabGrantedThisSession && !isFirstBet;
+        
+        if (this.bankroll < minBet && canGrantBMTab) {
             this.bankroll = minBet;
+            this.bmTabGrantedThisSession = true; // Mark as granted for this session
             this.stats = StorageManager.updateStats({
                 bmTabs: this.stats.bmTabs + 1
             });
