@@ -326,6 +326,7 @@ class Game {
         document.getElementById('race-timer').textContent = '';
         
         this.renderOstrichCards();
+        this.updateExoticBetsDropdowns(); // Update odds in exotic bets dropdowns
         this.updateUI();
         this.updateBetsDisplay();
         this.updateExoticBetsDisplay();
@@ -417,19 +418,7 @@ class Game {
     }
 
     setupExoticBets() {
-        // Populate ostrich select dropdowns
-        const selects = ['exotic-pos1', 'exotic-pos2', 'exotic-pos3', 'exotic-pos4'];
-        selects.forEach(selectId => {
-            const select = document.getElementById(selectId);
-            this.ostrichManager.ostriches.forEach(ostrich => {
-                const option = document.createElement('option');
-                option.value = ostrich.number;
-                option.textContent = `${ostrich.number}. ${ostrich.name} (${ostrich.odds}:1)`;
-                select.appendChild(option);
-            });
-        });
-
-        // Update exotic type display
+        // Set up event listeners for exotic type changes
         document.querySelectorAll('input[name="exotic-type"]').forEach(radio => {
             radio.addEventListener('change', () => {
                 this.updateExoticTypeDisplay(radio.value);
@@ -438,6 +427,39 @@ class Game {
 
         // Initialize display
         this.updateExoticTypeDisplay('exacta');
+        
+        // Populate dropdowns with current ostriches
+        this.updateExoticBetsDropdowns();
+    }
+
+    updateExoticBetsDropdowns() {
+        // Update ostrich select dropdowns with current odds
+        const selects = ['exotic-pos1', 'exotic-pos2', 'exotic-pos3', 'exotic-pos4'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            
+            // Clear existing options (except the first empty one)
+            const firstOption = select.options[0];
+            select.innerHTML = '';
+            if (firstOption && firstOption.value === '') {
+                select.appendChild(firstOption);
+            } else {
+                // Add empty option if it doesn't exist
+                const emptyOption = document.createElement('option');
+                emptyOption.value = '';
+                emptyOption.textContent = 'Select...';
+                select.appendChild(emptyOption);
+            }
+            
+            // Add current ostriches with their current odds
+            this.ostrichManager.ostriches.forEach(ostrich => {
+                const option = document.createElement('option');
+                option.value = ostrich.number;
+                option.textContent = `${ostrich.number}. ${ostrich.name} (${ostrich.odds}:1)`;
+                select.appendChild(option);
+            });
+        });
     }
 
     updateExoticTypeDisplay(type) {
@@ -486,7 +508,7 @@ class Game {
         for (let i = 1; i <= numPicks; i++) {
             const pick = parseInt(document.getElementById(`exotic-pos${i}`).value);
             if (!pick) {
-                this.showNotification('Selection Required!', `Please select position ${i}!`,'💸', true);
+                this.showNotification('Selection Required!', `Please select position ${i}!`, '💸', true);
                 return false;
             }
             if (picks.includes(pick)) {
