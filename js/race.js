@@ -179,24 +179,24 @@ class Race {
         const finishLineX = trackStartX + trackWidth + ostrichWidth;
         this.renderer.ctx.save();
         this.renderer.ctx.fillStyle = '#FFFFFF';
-        const squareSize = 10;
+        const squareSize = 15;
         const numSquares = Math.ceil((canvasRect.height - 60) / squareSize);
         for (let i = 0; i < numSquares; i++) {
             const y = 30 + i * squareSize;
-            // Draw white squares in checkered pattern
-            if ((i + Math.floor((finishLineX / squareSize))) % 2 === 0) {
+            if (i % 2 === 0) {
                 this.renderer.ctx.fillRect(finishLineX, y, squareSize, squareSize);
-                this.renderer.ctx.fillRect(finishLineX + squareSize, y, squareSize, squareSize);
+            } else {
+                this.renderer.ctx.fillRect(finishLineX + squareSize / 2, y, squareSize, squareSize);
             }
         }
         // Draw black squares
         this.renderer.ctx.fillStyle = '#000';
         for (let i = 0; i < numSquares; i++) {
             const y = 30 + i * squareSize;
-            // Draw black squares in opposite pattern
-            if ((i + Math.floor((finishLineX / squareSize))) % 2 !== 0) {
+            if (i % 2 === 0) {
+                this.renderer.ctx.fillRect(finishLineX + squareSize / 2, y, squareSize, squareSize);
+            } else {
                 this.renderer.ctx.fillRect(finishLineX, y, squareSize, squareSize);
-                this.renderer.ctx.fillRect(finishLineX + squareSize, y, squareSize, squareSize);
             }
         }
         this.renderer.ctx.restore();
