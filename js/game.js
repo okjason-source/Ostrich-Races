@@ -41,6 +41,19 @@ class Game {
 
     updateBankroll(amount) {
         this.bankroll = Math.max(0, amount);
+        
+        // Check if player needs a B-M Tab (bailout)
+        const minBet = 1000000;
+        if (this.bankroll < minBet) {
+            this.bankroll = minBet;
+            this.stats = StorageManager.updateStats({
+                bmTabs: this.stats.bmTabs + 1
+            });
+            
+            // Show notification
+            alert('💸 B-M Tab: Another million added to your account! 💸');
+        }
+        
         StorageManager.saveBankroll(this.bankroll);
         this.updateUI();
     }
@@ -359,6 +372,11 @@ class Game {
         const bankrollEl = document.getElementById('bankroll-amount');
         if (bankrollEl) {
             bankrollEl.textContent = formatMoney(this.bankroll);
+        }
+        
+        const bmTabEl = document.getElementById('bm-tab-count');
+        if (bmTabEl) {
+            bmTabEl.textContent = this.stats.bmTabs;
         }
     }
 

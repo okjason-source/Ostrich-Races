@@ -45,7 +45,8 @@ class StorageManager {
                 totalWins: 0,
                 totalLosses: 0,
                 biggestWin: 0,
-                biggestLoss: 0
+                biggestLoss: 0,
+                bmTabs: 0
             };
         } catch (e) {
             console.error('Failed to load stats:', e);
@@ -54,7 +55,8 @@ class StorageManager {
                 totalWins: 0,
                 totalLosses: 0,
                 biggestWin: 0,
-                biggestLoss: 0
+                biggestLoss: 0,
+                bmTabs: 0
             };
         }
     }
