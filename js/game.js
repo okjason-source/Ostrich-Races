@@ -8,6 +8,7 @@ class Game {
         this.exoticBettingSystem = new ExoticBettingSystem();
         this.ostrichManager = new OstrichManager();
         this.soundSystem = new SoundSystem();
+        this.eventSystem = new EventSystem();
         this.race = null;
         this.countdownInterval = null;
         
@@ -27,6 +28,12 @@ class Game {
         // Initialize ostriches with current time period
         const currentTimePeriod = this.dayNightCycle ? this.dayNightCycle.getCurrentTimePeriod() : null;
         this.ostrichManager.initializeOstriches(currentTimePeriod);
+        
+        // Generate pre-race events and apply modifiers
+        this.eventSystem.generatePreRaceEvents(this.ostrichManager.ostriches);
+        this.ostrichManager.ostriches.forEach(ostrich => {
+            this.eventSystem.applyPreRaceModifiers(ostrich);
+        });
         
         this.race = new Race(this.ostrichManager, renderer, canvas, this.soundSystem);
         this.updateUI();
@@ -52,12 +59,15 @@ class Game {
         this.bankroll = Math.max(0, amount);
         
         // Check if player needs a B-M Tab (bailout)
-        // Rules: Only one per session, never on the very first bet
+        // Rules: If at 0, must get tab. Otherwise, only one per session, never on the very first bet
         const minBet = 1000000;
         const isFirstBet = this.stats.racesWatched === 0;
+        const isAtZero = this.bankroll === 0;
         const canGrantBMTab = !this.bmTabGrantedThisSession && !isFirstBet;
         
-        if (this.bankroll < minBet && canGrantBMTab) {
+        // If at 0, must grant (unless it's the first bet)
+        // Otherwise, grant if below minBet and canGrantBMTab
+        if ((isAtZero && !isFirstBet) || (this.bankroll < minBet && canGrantBMTab)) {
             this.bankroll = minBet;
             this.bmTabGrantedThisSession = true; // Mark as granted for this session
             this.stats = StorageManager.updateStats({
@@ -313,6 +323,14 @@ class Game {
         
         // Reset everything with current time period
         this.ostrichManager.initializeOstriches(currentTimePeriod);
+        
+        // Generate pre-race events and apply modifiers
+        this.eventSystem.clearAll();
+        this.eventSystem.generatePreRaceEvents(this.ostrichManager.ostriches);
+        this.ostrichManager.ostriches.forEach(ostrich => {
+            this.eventSystem.applyPreRaceModifiers(ostrich);
+        });
+        
         this.bettingSystem.clearAllBets();
         this.exoticBettingSystem.clearAllExoticBets();
         this.race.state = 'waiting';
@@ -356,6 +374,12 @@ class Game {
                 card.classList.add('selected');
             }
             
+            // Check for pre-race event
+            const preRaceEvent = this.eventSystem.getPreRaceEvent(ostrich.number);
+            const eventIndicator = preRaceEvent 
+                ? `<div class="pre-race-event-indicator">${preRaceEvent.icon}${preRaceEvent.modifier.speed > 0 ? '+' : '-'}</div>`
+                : '';
+            
             card.innerHTML = `
                 <div class="ostrich-number-circle" style="background-color: ${ostrich.color};">
                     ${ostrich.number}
@@ -364,6 +388,7 @@ class Game {
                     <div class="ostrich-name">${ostrich.name}</div>
                     <div class="ostrich-odds">${ostrich.odds}:1</div>
                 </div>
+                ${eventIndicator}
             `;
             
             card.addEventListener('click', () => {
