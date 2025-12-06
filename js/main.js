@@ -32,9 +32,18 @@ function setupEventListeners() {
     const betAmountInput = document.getElementById('bet-amount');
     
     // Sprite toggle button
-    document.getElementById('sprite-toggle').addEventListener('click', () => {
+    const spriteToggleBtn = document.getElementById('sprite-toggle');
+    spriteToggleBtn.addEventListener('click', () => {
         const useImage = renderer.toggleSpriteType();
         console.log('Sprite type:', useImage ? 'Image' : 'Drawn');
+        
+        // Update button appearance based on mode
+        if (useImage) {
+            spriteToggleBtn.classList.remove('drawn-mode');
+        } else {
+            spriteToggleBtn.classList.add('drawn-mode');
+        }
+        
         game.race.render();
     });
     
