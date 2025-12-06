@@ -58,8 +58,8 @@ class Game {
                 bmTabs: this.stats.bmTabs + 1
             });
             
-            // Show notification
-            alert('💸 B-M Tab: Another million added to your account! 💸');
+            // Show themed notification
+            this.showBMTabNotification();
         }
         
         StorageManager.saveBankroll(this.bankroll);
@@ -552,6 +552,21 @@ class Game {
             `;
             listEl.appendChild(div);
         });
+    }
+
+    showBMTabNotification() {
+        const notification = document.getElementById('bm-tab-notification');
+        if (!notification) return;
+        
+        // Show notification
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
+        
+        // Auto-hide after 4 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            notification.classList.add('hidden');
+        }, 4000);
     }
 }
 
