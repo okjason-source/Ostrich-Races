@@ -54,7 +54,7 @@ function setupEventListeners() {
         const betType = document.querySelector('input[name="bet-type"]:checked').value;
         
         if (!selected) {
-            game.showNotification('Select an Ostrich!', 'Please select an ostrich first!', '🐪', true);
+            game.showNotification('Select an Ostrich!', 'Please select an ostrich first!', '💸', true);
             return;
         }
         
