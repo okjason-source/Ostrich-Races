@@ -48,34 +48,48 @@ class Game {
         }
     }
 
-    updateBankroll(amount) {
-        this.bankroll = Math.max(0, amount);
-        
+    checkAndGrantBMTab() {
         // Check if player needs a B-M Tab (bailout)
-        // Rules: If at 0, must get tab. Otherwise, only one per session, never on the very first bet
+        // Rules: Never on the very first bet. All tabs are counted.
         const minBet = 1000000;
         const isFirstBet = this.stats.racesWatched === 0;
         const isAtZero = this.bankroll === 0;
-        const canGrantBMTab = !this.bmTabGrantedThisSession && !isFirstBet;
         
         // If at 0, must grant (unless it's the first bet)
-        // Otherwise, grant if below minBet and canGrantBMTab
-        if ((isAtZero && !isFirstBet) || (this.bankroll < minBet && canGrantBMTab)) {
+        // Otherwise, grant if below minBet (can get multiple tabs, all are counted)
+        if ((isAtZero && !isFirstBet) || (this.bankroll < minBet && !isFirstBet)) {
             this.bankroll = minBet;
-            this.bmTabGrantedThisSession = true; // Mark as granted for this session
+            this.bmTabGrantedThisSession = true; // Mark as granted for this race
             this.stats = StorageManager.updateStats({
                 bmTabs: this.stats.bmTabs + 1
             });
             
             // Show themed notification
             this.showBMTabNotification();
+            
+            StorageManager.saveBankroll(this.bankroll);
+            this.updateUI();
         }
-        
+    }
+
+    updateBankroll(amount) {
+        this.bankroll = Math.max(0, amount);
         StorageManager.saveBankroll(this.bankroll);
         this.updateUI();
     }
 
     placeBet(ostrichNumber, amount, type = 'win') {
+        // Check and grant B-M Tab if needed BEFORE checking funds
+        const hadTabBefore = this.bmTabGrantedThisSession;
+        this.checkAndGrantBMTab();
+        const justGotTab = !hadTabBefore && this.bmTabGrantedThisSession;
+        
+        // If you just got a tab, you can only bet $1 million for this race
+        if (justGotTab && amount > 1000000) {
+            this.showNotification('Tab Bet Limit!', 'With a B-M Tab, you can only bet $1,000,000 for this race.', '💰', true);
+            return false;
+        }
+        
         if (amount > this.bankroll) {
             this.showNotification('Insufficient Funds!', 'You don\'t have enough money for this bet.', '💰', true);
             return false;
@@ -317,6 +331,9 @@ class Game {
         // Reset everything with current time period
         this.ostrichManager.initializeOstriches(currentTimePeriod);
         
+        // Reset B-M Tab for new race (can get a new tab if needed for this race)
+        this.bmTabGrantedThisSession = false;
+        
         this.bettingSystem.clearAllBets();
         this.exoticBettingSystem.clearAllExoticBets();
         this.race.state = 'waiting';
@@ -500,8 +517,19 @@ class Game {
     }
 
     placeExoticBet() {
+        // Check and grant B-M Tab if needed BEFORE checking funds
+        const hadTabBefore = this.bmTabGrantedThisSession;
+        this.checkAndGrantBMTab();
+        const justGotTab = !hadTabBefore && this.bmTabGrantedThisSession;
+        
         const type = document.querySelector('input[name="exotic-type"]:checked').value;
         const amount = parseFloat(document.getElementById('exotic-bet-amount').value);
+        
+        // If you just got a tab, you can only bet $1 million for this race
+        if (justGotTab && amount > 1000000) {
+            this.showNotification('Tab Bet Limit!', 'With a B-M Tab, you can only bet $1,000,000 for this race.', '💰', true);
+            return false;
+        }
         
         if (amount > this.bankroll) {
             this.showNotification('Insufficient Funds!', 'You don\'t have enough money for this bet.', '💰', true);
