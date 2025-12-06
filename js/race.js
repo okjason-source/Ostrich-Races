@@ -146,15 +146,16 @@ class Race {
         const canvasRect = this.canvas.getBoundingClientRect();
         const ostrichWidth = 70;
         const startMargin = 50; // Space for position numbers
-        const endMargin = 30; // Space for finish line
-        const trackWidth = canvasRect.width - startMargin - endMargin - ostrichWidth;
+        const finishLineWidth = 20; // Width of finish line
+        const endMargin = 10; // Small padding after finish line
+        const trackWidth = canvasRect.width - startMargin - endMargin - ostrichWidth - finishLineWidth;
         const trackStartX = startMargin;
         
         // Draw track lanes
         this.renderer.drawRect(
             trackStartX,
             30,
-            trackWidth + ostrichWidth + endMargin,
+            trackWidth + ostrichWidth + finishLineWidth + endMargin,
             canvasRect.height - 60,
             'rgba(139, 69, 19, 0.3)'
         );
@@ -169,7 +170,7 @@ class Race {
             const y = 30 + laneHeight * i;
             this.renderer.ctx.beginPath();
             this.renderer.ctx.moveTo(trackStartX, y);
-            this.renderer.ctx.lineTo(trackStartX + trackWidth + ostrichWidth + endMargin, y);
+            this.renderer.ctx.lineTo(trackStartX + trackWidth + ostrichWidth + finishLineWidth, y);
             this.renderer.ctx.stroke();
         }
         this.renderer.ctx.restore();
@@ -178,24 +179,24 @@ class Race {
         const finishLineX = trackStartX + trackWidth + ostrichWidth;
         this.renderer.ctx.save();
         this.renderer.ctx.fillStyle = '#FFFFFF';
-        const squareSize = 15;
+        const squareSize = 10;
         const numSquares = Math.ceil((canvasRect.height - 60) / squareSize);
         for (let i = 0; i < numSquares; i++) {
             const y = 30 + i * squareSize;
-            if (i % 2 === 0) {
+            // Draw white squares in checkered pattern
+            if ((i + Math.floor((finishLineX / squareSize))) % 2 === 0) {
                 this.renderer.ctx.fillRect(finishLineX, y, squareSize, squareSize);
-            } else {
-                this.renderer.ctx.fillRect(finishLineX + squareSize / 2, y, squareSize, squareSize);
+                this.renderer.ctx.fillRect(finishLineX + squareSize, y, squareSize, squareSize);
             }
         }
         // Draw black squares
         this.renderer.ctx.fillStyle = '#000';
         for (let i = 0; i < numSquares; i++) {
             const y = 30 + i * squareSize;
-            if (i % 2 === 0) {
-                this.renderer.ctx.fillRect(finishLineX + squareSize / 2, y, squareSize, squareSize);
-            } else {
+            // Draw black squares in opposite pattern
+            if ((i + Math.floor((finishLineX / squareSize))) % 2 !== 0) {
                 this.renderer.ctx.fillRect(finishLineX, y, squareSize, squareSize);
+                this.renderer.ctx.fillRect(finishLineX + squareSize, y, squareSize, squareSize);
             }
         }
         this.renderer.ctx.restore();
