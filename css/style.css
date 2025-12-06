@@ -590,8 +590,8 @@ button:disabled {
     background: rgba(255, 215, 0, 0.7);
 }
 
-/* B-M Tab Notification */
-.bm-notification {
+/* Themed Notification */
+.themed-notification {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -602,18 +602,18 @@ button:disabled {
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-.bm-notification.show {
+.themed-notification.show {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
     pointer-events: auto;
 }
 
-.bm-notification.hidden {
+.themed-notification.hidden {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.8);
 }
 
-.bm-notification-content {
+.themed-notification-content {
     background: linear-gradient(135deg, #1a0033 0%, #4a0080 50%, #ff00ff 100%);
     border: 3px solid #ffd700;
     border-radius: 12px;
@@ -626,10 +626,10 @@ button:disabled {
     align-items: center;
     gap: 20px;
     min-width: 350px;
-    animation: bmPulse 2s ease-in-out infinite;
+    animation: themedPulse 2s ease-in-out infinite;
 }
 
-@keyframes bmPulse {
+@keyframes themedPulse {
     0%, 100% {
         box-shadow: 
             0 0 30px rgba(255, 215, 0, 0.8),
@@ -644,13 +644,13 @@ button:disabled {
     }
 }
 
-.bm-notification-icon {
+.themed-notification-icon {
     font-size: 4em;
-    animation: bmSpin 1s ease-in-out;
+    animation: themedSpin 1s ease-in-out;
     filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
 }
 
-@keyframes bmSpin {
+@keyframes themedSpin {
     0% {
         transform: rotate(0deg) scale(0);
     }
@@ -662,11 +662,11 @@ button:disabled {
     }
 }
 
-.bm-notification-text {
+.themed-notification-text {
     flex: 1;
 }
 
-.bm-notification-title {
+.themed-notification-title {
     font-size: 1.8em;
     font-weight: bold;
     color: #ffd700;
@@ -678,10 +678,23 @@ button:disabled {
     letter-spacing: 1px;
 }
 
-.bm-notification-message {
+.themed-notification-message {
     font-size: 1.2em;
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Error variant */
+.themed-notification.error .themed-notification-content {
+    border-color: #ff4444;
+    box-shadow: 
+        0 0 30px rgba(255, 68, 68, 0.8),
+        0 0 60px rgba(255, 0, 0, 0.6),
+        inset 0 0 20px rgba(255, 68, 68, 0.2);
+}
+
+.themed-notification.error .themed-notification-title {
+    color: #ff6666;
 }
 
 /* Responsive adjustments */

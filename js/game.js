@@ -68,12 +68,12 @@ class Game {
 
     placeBet(ostrichNumber, amount, type = 'win') {
         if (amount > this.bankroll) {
-            alert('Insufficient funds!');
+            this.showNotification('Insufficient Funds!', 'You don\'t have enough money for this bet.', '💰', true);
             return false;
         }
 
         if (amount <= 0) {
-            alert('Bet amount must be greater than 0!');
+            this.showNotification('Invalid Bet Amount!', 'Bet amount must be greater than 0!', '⚠️', true);
             return false;
         }
 
@@ -108,7 +108,7 @@ class Game {
 
     startRace() {
         if (!this.bettingSystem.hasBets() && !this.exoticBettingSystem.hasExoticBets()) {
-            alert('Place at least one bet before starting the race!');
+            this.showNotification('No Bets Placed!', 'Place at least one bet before starting the race!', '🎲', true);
             return;
         }
 
@@ -469,12 +469,12 @@ class Game {
         const amount = parseFloat(document.getElementById('exotic-bet-amount').value);
         
         if (amount > this.bankroll) {
-            alert('Insufficient funds!');
+            this.showNotification('Insufficient Funds!', 'You don\'t have enough money for this bet.', '💰', true);
             return false;
         }
 
         if (amount <= 0) {
-            alert('Bet amount must be greater than 0!');
+            this.showNotification('Invalid Bet Amount!', 'Bet amount must be greater than 0!', '⚠️', true);
             return false;
         }
 
@@ -486,11 +486,11 @@ class Game {
         for (let i = 1; i <= numPicks; i++) {
             const pick = parseInt(document.getElementById(`exotic-pos${i}`).value);
             if (!pick) {
-                alert(`Please select position ${i}!`);
+                this.showNotification('Selection Required!', `Please select position ${i}!`, '🎯', true);
                 return false;
             }
             if (picks.includes(pick)) {
-                alert('Cannot select the same ostrich twice!');
+                this.showNotification('Invalid Selection!', 'Cannot select the same ostrich twice!', '⚠️', true);
                 return false;
             }
             picks.push(pick);
@@ -555,18 +555,37 @@ class Game {
     }
 
     showBMTabNotification() {
-        const notification = document.getElementById('bm-tab-notification');
+        this.showNotification('B-M Tab Activated!', 'Another million added to your account!', '💸');
+    }
+
+    showNotification(title, message, icon = '💸', isError = false, duration = 4000) {
+        const notification = document.getElementById('themed-notification');
         if (!notification) return;
+        
+        const titleEl = notification.querySelector('.themed-notification-title');
+        const messageEl = notification.querySelector('.themed-notification-message');
+        const iconEl = notification.querySelector('.themed-notification-icon');
+        
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        iconEl.textContent = icon;
+        
+        // Add/remove error class
+        if (isError) {
+            notification.classList.add('error');
+        } else {
+            notification.classList.remove('error');
+        }
         
         // Show notification
         notification.classList.remove('hidden');
         notification.classList.add('show');
         
-        // Auto-hide after 4 seconds
+        // Auto-hide after duration
         setTimeout(() => {
             notification.classList.remove('show');
             notification.classList.add('hidden');
-        }, 4000);
+        }, duration);
     }
 }
 
