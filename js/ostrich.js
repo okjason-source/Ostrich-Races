@@ -8,7 +8,7 @@ const OSTRICH_COLORS = [
     { name: 'Tennis Chain', color: '#00FF00', saddle: '#00FF00', collar: '#00FF00' },
     { name: 'Ruby Luxurious', color: '#FF1493', saddle: '#FF1493', collar: '#FF1493' },
     { name: 'Sapphire Elite', color: '#00CED1', saddle: '#00CED1', collar: '#00CED1' },
-    { name: 'Caviar Classic', color: '#FFA500', saddle: '#FFA500', collar: '#FFA500' }
+    { name: 'Classic Caviar', color: '#FFA500', saddle: '#FFA500', collar: '#FFA500' }
 ];
 
 class Ostrich {
