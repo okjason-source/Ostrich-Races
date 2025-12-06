@@ -110,6 +110,7 @@ h1 {
     justify-content: center;
     align-items: center;
     gap: 20px;
+    position: relative;
 }
 
 #race-status {
@@ -122,6 +123,24 @@ h1 {
     font-size: 1.5em;
     color: #ffd700;
     text-shadow: 2px 2px 0px #000;
+}
+
+.sprite-toggle-btn {
+    position: absolute;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sprite-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 215, 0, 0.7);
+    transform: scale(1.1);
 }
 
 #bm-tab-display {

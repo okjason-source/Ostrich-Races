@@ -31,6 +31,13 @@ window.addEventListener('DOMContentLoaded', () => {
 function setupEventListeners() {
     const betAmountInput = document.getElementById('bet-amount');
     
+    // Sprite toggle button
+    document.getElementById('sprite-toggle').addEventListener('click', () => {
+        const useImage = renderer.toggleSpriteType();
+        console.log('Sprite type:', useImage ? 'Image' : 'Drawn');
+        game.race.render();
+    });
+    
     // Place bet button
     document.getElementById('place-bet-btn').addEventListener('click', () => {
         const amount = parseFloat(betAmountInput.value);

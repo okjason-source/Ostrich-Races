@@ -118,6 +118,7 @@ class SpriteRenderer {
         this.sprites = new Map();
         this.ostrichImage = null;
         this.imageLoaded = false;
+        this.useImageSprites = true; // Toggle for sprite type
         this.loadOstrichImage();
     }
 
@@ -157,15 +158,20 @@ class SpriteRenderer {
     drawOstrich(x, y, width, height, colorScheme, number, animationFrame = 0) {
         this.ctx.save();
         
-        if (this.imageLoaded && this.ostrichImage) {
+        if (this.useImageSprites && this.imageLoaded && this.ostrichImage) {
             // Use the actual ostrich image
             this.drawAnimatedOstrichFromImage(x, y, width, height, colorScheme, number, animationFrame);
         } else {
-            // Fallback to simple drawing if image not loaded
+            // Use simple drawn sprites
             this.drawSimpleOstrich(x, y, width, height, colorScheme, number, animationFrame);
         }
         
         this.ctx.restore();
+    }
+    
+    toggleSpriteType() {
+        this.useImageSprites = !this.useImageSprites;
+        return this.useImageSprites;
     }
 
     drawAnimatedOstrichFromImage(x, y, width, height, colorScheme, number, animationFrame) {
