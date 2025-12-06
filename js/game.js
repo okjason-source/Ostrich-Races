@@ -8,7 +8,6 @@ class Game {
         this.exoticBettingSystem = new ExoticBettingSystem();
         this.ostrichManager = new OstrichManager();
         this.soundSystem = new SoundSystem();
-        this.eventSystem = new EventSystem();
         this.race = null;
         this.countdownInterval = null;
         
@@ -28,12 +27,6 @@ class Game {
         // Initialize ostriches with current time period
         const currentTimePeriod = this.dayNightCycle ? this.dayNightCycle.getCurrentTimePeriod() : null;
         this.ostrichManager.initializeOstriches(currentTimePeriod);
-        
-        // Generate pre-race events and apply modifiers
-        this.eventSystem.generatePreRaceEvents(this.ostrichManager.ostriches);
-        this.ostrichManager.ostriches.forEach(ostrich => {
-            this.eventSystem.applyPreRaceModifiers(ostrich);
-        });
         
         this.race = new Race(this.ostrichManager, renderer, canvas, this.soundSystem);
         this.updateUI();
@@ -324,13 +317,6 @@ class Game {
         // Reset everything with current time period
         this.ostrichManager.initializeOstriches(currentTimePeriod);
         
-        // Generate pre-race events and apply modifiers
-        this.eventSystem.clearAll();
-        this.eventSystem.generatePreRaceEvents(this.ostrichManager.ostriches);
-        this.ostrichManager.ostriches.forEach(ostrich => {
-            this.eventSystem.applyPreRaceModifiers(ostrich);
-        });
-        
         this.bettingSystem.clearAllBets();
         this.exoticBettingSystem.clearAllExoticBets();
         this.race.state = 'waiting';
@@ -374,12 +360,6 @@ class Game {
                 card.classList.add('selected');
             }
             
-            // Check for pre-race event
-            const preRaceEvent = this.eventSystem.getPreRaceEvent(ostrich.number);
-            const eventIndicator = preRaceEvent 
-                ? `<div class="pre-race-event-indicator">${preRaceEvent.icon}${preRaceEvent.modifier.speed > 0 ? '+' : '-'}</div>`
-                : '';
-            
             card.innerHTML = `
                 <div class="ostrich-number-circle" style="background-color: ${ostrich.color};">
                     ${ostrich.number}
@@ -388,7 +368,6 @@ class Game {
                     <div class="ostrich-name">${ostrich.name}</div>
                     <div class="ostrich-odds">${ostrich.odds}:1</div>
                 </div>
-                ${eventIndicator}
             `;
             
             card.addEventListener('click', () => {
