@@ -108,7 +108,7 @@ class Game {
 
     startRace() {
         if (!this.bettingSystem.hasBets() && !this.exoticBettingSystem.hasExoticBets()) {
-            this.showNotification('No Bets Placed!', 'Place at least one bet before starting the race!', true);
+            this.showNotification('No Bets Placed!', 'Place at least one bet before starting the race!','💸', true);
             return;
         }
 
@@ -486,7 +486,7 @@ class Game {
         for (let i = 1; i <= numPicks; i++) {
             const pick = parseInt(document.getElementById(`exotic-pos${i}`).value);
             if (!pick) {
-                this.showNotification('Selection Required!', `Please select position ${i}!`, true);
+                this.showNotification('Selection Required!', `Please select position ${i}!`,'💸', true);
                 return false;
             }
             if (picks.includes(pick)) {
