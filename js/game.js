@@ -62,7 +62,7 @@ class Game {
         this.updateStartButton();
         
         // Always reset to default bet amount
-        document.getElementById('bet-amount').value = '1000';
+        document.getElementById('bet-amount').value = '1000000';
         
         return true;
     }
@@ -297,8 +297,8 @@ class Game {
         raceArea.classList.remove('hidden');
         
         // Reset bet amount to default
-        document.getElementById('bet-amount').value = '1000';
-        document.getElementById('exotic-bet-amount').value = '1000';
+        document.getElementById('bet-amount').value = '1000000';
+        document.getElementById('exotic-bet-amount').value = '1000000';
         
         // Reset race status text
         document.getElementById('race-status').textContent = 'Waiting for bets...';
@@ -398,7 +398,7 @@ class Game {
             this.ostrichManager.ostriches.forEach(ostrich => {
                 const option = document.createElement('option');
                 option.value = ostrich.number;
-                option.textContent = `${ostrich.number}. ${ostrich.name}`;
+                option.textContent = `${ostrich.number}. ${ostrich.name} (${ostrich.odds}:1)`;
                 select.appendChild(option);
             });
         });
@@ -476,7 +476,7 @@ class Game {
         this.updateStartButton();
         
         // Reset
-        document.getElementById('exotic-bet-amount').value = '1000';
+        document.getElementById('exotic-bet-amount').value = '1000000';
         for (let i = 1; i <= 4; i++) {
             document.getElementById(`exotic-pos${i}`).value = '';
         }

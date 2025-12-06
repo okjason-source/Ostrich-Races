@@ -40,21 +40,21 @@ function setupEventListeners() {
         
         if (game.placeBet(selected, amount, betType)) {
             // Keep default value visible
-            betAmountInput.value = '1000';
+            betAmountInput.value = '1000000';
         }
     });
     
-    // Bet amount input - ensure it defaults to 1000 if cleared
+    // Bet amount input - ensure it defaults to 1000000 if cleared
     betAmountInput.addEventListener('blur', function() {
         if (!this.value || parseFloat(this.value) <= 0) {
-            this.value = '1000';
+            this.value = '1000000';
         }
     });
     
     // Also reset on focus if empty
     betAmountInput.addEventListener('focus', function() {
         if (!this.value) {
-            this.value = '1000';
+            this.value = '1000000';
         }
     });
     
