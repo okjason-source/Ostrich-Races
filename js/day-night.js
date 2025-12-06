@@ -54,18 +54,21 @@ class DayNightCycle {
         
         // Show stars during night hours (20-7)
         if (hours >= 20 || hours < 7) {
-            // Create a subtle star pattern using radial gradients
+            // Create a subtle star pattern using radial gradients, concentrated at the top
+            // Stars positioned only in the top 10% of the canvas
             const stars = `
-                radial-gradient(1px 1px at 20% 30%, white, transparent),
-                radial-gradient(1px 1px at 60% 70%, white, transparent),
-                radial-gradient(2px 2px at 50% 50%, white, transparent),
-                radial-gradient(1px 1px at 80% 10%, white, transparent),
-                radial-gradient(1px 1px at 90% 60%, white, transparent),
-                radial-gradient(2px 2px at 15% 80%, white, transparent),
-                radial-gradient(1px 1px at 30% 20%, white, transparent),
-                radial-gradient(1px 1px at 70% 90%, white, transparent),
-                radial-gradient(1px 1px at 40% 40%, white, transparent),
-                radial-gradient(2px 2px at 85% 85%, white, transparent)
+                radial-gradient(1px 1px at 15% 3%, white, transparent),
+                radial-gradient(2px 2px at 45% 5%, white, transparent),
+                radial-gradient(1px 1px at 75% 2%, white, transparent),
+                radial-gradient(1px 1px at 25% 7%, white, transparent),
+                radial-gradient(1px 1px at 85% 6%, white, transparent),
+                radial-gradient(2px 2px at 55% 4%, white, transparent),
+                radial-gradient(1px 1px at 65% 8%, white, transparent),
+                radial-gradient(1px 1px at 35% 3%, white, transparent),
+                radial-gradient(1px 1px at 92% 9%, white, transparent),
+                radial-gradient(2px 2px at 10% 5%, white, transparent),
+                radial-gradient(1px 1px at 50% 7%, white, transparent),
+                radial-gradient(1px 1px at 80% 4%, white, transparent)
             `;
             return stars + ', ' + this.getTimeBasedGradient();
         }
