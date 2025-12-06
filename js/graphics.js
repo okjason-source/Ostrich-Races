@@ -145,13 +145,8 @@ class SpriteRenderer {
     }
 
     clear() {
-        // Draw sky gradient background
-        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-        gradient.addColorStop(0, '#87CEEB'); // Sky blue
-        gradient.addColorStop(0.5, '#98D8C8'); // Mint
-        gradient.addColorStop(1, '#F7DC6F'); // Gold
-        this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // Clear canvas to transparent - let CSS background show through
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     // Draw animated ostrich from the side with leg animation

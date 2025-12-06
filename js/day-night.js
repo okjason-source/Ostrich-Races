@@ -77,9 +77,16 @@ class DayNightCycle {
     }
     
     updateBackground() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        console.log(`Day/Night Cycle - Current time: ${hours}:${minutes < 10 ? '0' : ''}${minutes}`);
+        
         const gradient = this.addStarsOverlay();
         this.canvas.style.background = gradient;
         this.canvas.style.backgroundSize = '200% 200%, 100% 100%';
+        
+        console.log('Applied gradient:', gradient.substring(0, 100) + '...');
     }
     
     destroy() {
