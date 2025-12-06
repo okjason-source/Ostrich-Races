@@ -2,13 +2,13 @@
 
 const OSTRICH_COLORS = [
     { name: 'Golden Emperor', color: '#FFD700', saddle: '#FFD700', collar: '#FFD700' },
-    { name: 'Diamond Dynasty', color: '#FF00FF', saddle: '#FF00FF', collar: '#FF00FF' },
-    { name: 'Platinum Thunder', color: '#00FFFF', saddle: '#00FFFF', collar: '#00FFFF' },
+    { name: 'Diamond Sand', color: '#FF00FF', saddle: '#FF00FF', collar: '#FF00FF' },
+    { name: 'Platinum Pressured', color: '#00FFFF', saddle: '#00FFFF', collar: '#00FFFF' },
     { name: 'Royal Fortune', color: '#8A2BE2', saddle: '#8A2BE2', collar: '#8A2BE2' },
-    { name: 'Emerald Tycoon', color: '#00FF00', saddle: '#00FF00', collar: '#00FF00' },
-    { name: 'Ruby Luxe', color: '#FF1493', saddle: '#FF1493', collar: '#FF1493' },
+    { name: 'Tennis Chain', color: '#00FF00', saddle: '#00FF00', collar: '#00FF00' },
+    { name: 'Ruby Luxurious', color: '#FF1493', saddle: '#FF1493', collar: '#FF1493' },
     { name: 'Sapphire Elite', color: '#00CED1', saddle: '#00CED1', collar: '#00CED1' },
-    { name: 'Amber Sovereign', color: '#FFA500', saddle: '#FFA500', collar: '#FFA500' }
+    { name: 'Caviar Classic', color: '#FFA500', saddle: '#FFA500', collar: '#FFA500' }
 ];
 
 class Ostrich {
