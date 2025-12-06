@@ -2,11 +2,15 @@
 
 let game;
 let renderer;
+let dayNightCycle;
 
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('game-canvas');
     renderer = new SpriteRenderer(canvas);
     renderer.resize();
+    
+    // Initialize day/night cycle
+    dayNightCycle = new DayNightCycle(canvas);
     
     game = new Game();
     game.initialize(canvas, renderer);
