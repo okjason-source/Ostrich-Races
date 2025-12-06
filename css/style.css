@@ -144,6 +144,8 @@ h1 {
 }
 
 #bm-tab-display {
+    position: absolute;
+    left: 60px;
     font-size: 0.9em;
     font-weight: normal;
     color: rgba(255, 215, 0, 0.6);
