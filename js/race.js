@@ -440,15 +440,27 @@ class Race {
             const centerX = canvasRect.width / 2;
             const centerY = canvasRect.height / 2;
             
+            // Calculate responsive sizes based on canvas dimensions
+            const isMobile = canvasRect.width < 768;
+            const canvasHeight = canvasRect.height;
+            const canvasWidth = canvasRect.width;
+            
+            // Scale font sizes and positions based on canvas size
+            const tajFontSize = isMobile ? Math.min(60, canvasHeight * 0.15) : 120;
+            const titleFontSize = isMobile ? Math.min(20, canvasWidth * 0.05) : 48;
+            const subtitleFontSize = isMobile ? Math.min(14, canvasWidth * 0.035) : 24;
+            const diamondSize = isMobile ? 4 : 8;
+            const sparkleDistance = isMobile ? canvasWidth * 0.2 : 100;
+            
             // Draw Taj Mahal emoji with golden glow and diamonds
             this.renderer.ctx.save();
             const tajX = centerX;
-            const tajY = centerY - 100;
+            const tajY = isMobile ? centerY - (canvasHeight * 0.15) : centerY - 100;
             
             // Draw golden glow behind emoji (multiple layers for effect)
-            this.renderer.ctx.shadowBlur = 30;
+            this.renderer.ctx.shadowBlur = isMobile ? 15 : 30;
             this.renderer.ctx.shadowColor = '#FFD700';
-            this.renderer.ctx.font = '120px Arial';
+            this.renderer.ctx.font = `${tajFontSize}px Arial`;
             this.renderer.ctx.textAlign = 'center';
             this.renderer.ctx.textBaseline = 'middle';
             
@@ -456,39 +468,41 @@ class Race {
             this.renderer.ctx.fillStyle = '#FFD700';
             this.renderer.ctx.fillText('🕌', tajX, tajY);
             
-            // Add diamond sparkles around the Taj Mahal
-            const diamondSize = 8;
+            // Add diamond sparkles around the Taj Mahal (scaled for mobile)
             const sparklePositions = [
-                { x: tajX - 80, y: tajY - 60 }, // Top left
-                { x: tajX + 80, y: tajY - 60 }, // Top right
-                { x: tajX - 70, y: tajY + 40 }, // Bottom left
-                { x: tajX + 70, y: tajY + 40 }, // Bottom right
-                { x: tajX - 100, y: tajY },     // Left
-                { x: tajX + 100, y: tajY },     // Right
+                { x: tajX - sparkleDistance * 0.8, y: tajY - sparkleDistance * 0.6 }, // Top left
+                { x: tajX + sparkleDistance * 0.8, y: tajY - sparkleDistance * 0.6 }, // Top right
+                { x: tajX - sparkleDistance * 0.7, y: tajY + sparkleDistance * 0.4 }, // Bottom left
+                { x: tajX + sparkleDistance * 0.7, y: tajY + sparkleDistance * 0.4 }, // Bottom right
+                { x: tajX - sparkleDistance, y: tajY },     // Left
+                { x: tajX + sparkleDistance, y: tajY },     // Right
             ];
             
             sparklePositions.forEach(pos => {
-                this.renderer.ctx.save();
-                this.renderer.ctx.translate(pos.x, pos.y);
-                this.renderer.ctx.rotate(Math.PI / 4); // Rotate 45 degrees for diamond shape
-                
-                // Diamond shape (rotated square)
-                this.renderer.ctx.fillStyle = '#00FFFF'; // Cyan for diamonds
-                this.renderer.ctx.strokeStyle = '#FFD700'; // Golden outline
-                this.renderer.ctx.lineWidth = 2;
-                this.renderer.ctx.shadowBlur = 15;
-                this.renderer.ctx.shadowColor = '#00FFFF';
-                
-                this.renderer.ctx.beginPath();
-                this.renderer.ctx.moveTo(0, -diamondSize);
-                this.renderer.ctx.lineTo(diamondSize, 0);
-                this.renderer.ctx.lineTo(0, diamondSize);
-                this.renderer.ctx.lineTo(-diamondSize, 0);
-                this.renderer.ctx.closePath();
-                this.renderer.ctx.fill();
-                this.renderer.ctx.stroke();
-                
-                this.renderer.ctx.restore();
+                // Only draw sparkles if they're within canvas bounds
+                if (pos.x >= 0 && pos.x <= canvasWidth && pos.y >= 0 && pos.y <= canvasHeight) {
+                    this.renderer.ctx.save();
+                    this.renderer.ctx.translate(pos.x, pos.y);
+                    this.renderer.ctx.rotate(Math.PI / 4); // Rotate 45 degrees for diamond shape
+                    
+                    // Diamond shape (rotated square)
+                    this.renderer.ctx.fillStyle = '#00FFFF'; // Cyan for diamonds
+                    this.renderer.ctx.strokeStyle = '#FFD700'; // Golden outline
+                    this.renderer.ctx.lineWidth = isMobile ? 1 : 2;
+                    this.renderer.ctx.shadowBlur = isMobile ? 8 : 15;
+                    this.renderer.ctx.shadowColor = '#00FFFF';
+                    
+                    this.renderer.ctx.beginPath();
+                    this.renderer.ctx.moveTo(0, -diamondSize);
+                    this.renderer.ctx.lineTo(diamondSize, 0);
+                    this.renderer.ctx.lineTo(0, diamondSize);
+                    this.renderer.ctx.lineTo(-diamondSize, 0);
+                    this.renderer.ctx.closePath();
+                    this.renderer.ctx.fill();
+                    this.renderer.ctx.stroke();
+                    
+                    this.renderer.ctx.restore();
+                }
             });
             
             this.renderer.ctx.restore();
@@ -496,20 +510,40 @@ class Race {
             // Draw "OSTRICH PALACE RACES" in large text with shadow effect
             this.renderer.ctx.save();
             
+            // Calculate text position (below Taj Mahal, centered)
+            const titleY = isMobile ? centerY + (canvasHeight * 0.05) : centerY - 20;
+            const subtitleY = isMobile ? centerY + (canvasHeight * 0.15) : centerY + 30;
+            
             // Shadow/outline
-            this.renderer.ctx.fillStyle = '#FF00FF';
-            this.renderer.ctx.font = 'bold 48px Arial';
+            this.renderer.ctx.shadowBlur = isMobile ? 5 : 10;
+            this.renderer.ctx.shadowColor = '#FF00FF';
+            this.renderer.ctx.font = `bold ${titleFontSize}px Arial`;
             this.renderer.ctx.textAlign = 'center';
             this.renderer.ctx.textBaseline = 'middle';
-            this.renderer.ctx.fillText('OSTRICH PALACE RACES', centerX + 3, centerY - 20 + 3);
+            
+            // Check if text fits, if not, use smaller font
+            const titleText = 'OSTRICH PALACE RACES';
+            let finalTitleFontSize = titleFontSize;
+            this.renderer.ctx.fillStyle = '#FF00FF';
+            let textMetrics = this.renderer.ctx.measureText(titleText);
+            if (textMetrics.width > canvasWidth * 0.9) {
+                finalTitleFontSize = Math.max(12, (canvasWidth * 0.9) / (textMetrics.width / titleFontSize));
+                this.renderer.ctx.font = `bold ${finalTitleFontSize}px Arial`;
+                textMetrics = this.renderer.ctx.measureText(titleText);
+            }
+            
+            this.renderer.ctx.fillText(titleText, centerX + (isMobile ? 1 : 3), titleY + (isMobile ? 1 : 3));
             
             // Main text
+            this.renderer.ctx.shadowBlur = 0;
             this.renderer.ctx.fillStyle = '#FFD700';
-            this.renderer.ctx.fillText('OSTRICH PALACE RACES', centerX, centerY - 20);
+            this.renderer.ctx.fillText(titleText, centerX, titleY);
             
             // Secondary shadow for cyan
+            this.renderer.ctx.shadowBlur = isMobile ? 3 : 5;
+            this.renderer.ctx.shadowColor = '#00FFFF';
             this.renderer.ctx.fillStyle = '#00FFFF';
-            this.renderer.ctx.fillText('OSTRICH PALACE RACES', centerX + 2, centerY - 20 + 2);
+            this.renderer.ctx.fillText(titleText, centerX + (isMobile ? 1 : 2), titleY + (isMobile ? 1 : 2));
             
             this.renderer.ctx.restore();
             
@@ -517,8 +551,8 @@ class Race {
             this.renderer.drawText(
                 'Place your bets',
                 centerX,
-                centerY + 30,
-                24,
+                subtitleY,
+                subtitleFontSize,
                 '#00FFFF'
             );
             return;
