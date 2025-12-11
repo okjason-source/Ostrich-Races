@@ -1215,9 +1215,28 @@ button:disabled {
     
     #betting-panel {
         order: 2;
-        min-height: 0;
-        flex: 1;
+        min-height: 300px;
+        max-height: calc(100vh - 50vh - 100px);
+        flex: 1 1 auto;
         overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #ostriches-list {
+        flex: 0 1 auto;
+        overflow-y: auto;
+        min-height: 200px;
+        max-height: 40vh;
+        margin-bottom: 10px;
+    }
+    
+    #bet-controls,
+    #current-bets,
+    #betting-bot-section,
+    #exotic-bets-section {
+        flex-shrink: 0;
     }
     
     #game-canvas {
