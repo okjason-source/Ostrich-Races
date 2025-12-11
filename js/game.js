@@ -1261,7 +1261,7 @@ class Game {
         }
         
         this.betsAnnouncementPromise = new Promise((resolve) => {
-            if (!this.llmExpert || !this.soundSystem) {
+            if (!this.soundSystem) {
                 this.betsAnnouncementPromise = null;
                 resolve();
                 return;
