@@ -1,18 +1,31 @@
 // Ostrich class and management
 
 const OSTRICH_COLORS = [
-    { name: 'Golden Emperor', color: '#FFD700', saddle: '#FFD700', collar: '#FFD700' },
-    { name: 'Diamond Sand', color: '#FF00FF', saddle: '#FF00FF', collar: '#FF00FF' },
-    { name: 'Platinum Pressured', color: '#00FFFF', saddle: '#00FFFF', collar: '#00FFFF' },
-    { name: 'Royal Fortune', color: '#8A2BE2', saddle: '#8A2BE2', collar: '#8A2BE2' },
-    { name: 'Tennis Chain', color: '#00FF00', saddle: '#00FF00', collar: '#00FF00' },
-    { name: 'Ruby Luxurious', color: '#FF1493', saddle: '#FF1493', collar: '#FF1493' },
-    { name: 'Sapphire Elite', color: '#00CED1', saddle: '#00CED1', collar: '#00CED1' },
-    { name: 'Classic Caviar', color: '#FFA500', saddle: '#FFA500', collar: '#FFA500' }
+    // Original ostriches
+    // bodyColor: '#654321' = brown, '#2C1810' = dark brown/black
+    // neckColor: '#F5F5F5' = white, '#FFE4E1' = light pink, '#FF69B4' = hot pink, '#FF10F0' = neon pink
+    // eyeStyle: 'dot', 'dash', 'sunglasses', 'dotdash'
+    { name: 'Golden Emperor', color: '#FFD700', saddle: '#FFD700', collar: '#FFD700', bodyColor: '#2C1810', neckColor: '#F5F5F5', eyeStyle: 'dot' },
+    { name: 'Diamond Sand', color: '#FF00FF', saddle: '#FF00FF', collar: '#FF00FF', bodyColor: '#654321', neckColor: '#FF10F0', eyeStyle: 'dash' },
+    { name: 'Platinum Pressured', color: '#00FFFF', saddle: '#00FFFF', collar: '#00FFFF', bodyColor: '#2C1810', neckColor: '#FF69B4', eyeStyle: 'dotdash' },
+    { name: 'Royal Fortune', color: '#8A2BE2', saddle: '#8A2BE2', collar: '#8A2BE2', bodyColor: '#654321', neckColor: '#F5F5F5', eyeStyle: 'dot' },
+    { name: 'Tennis Chain', color: '#00FF00', saddle: '#00FF00', collar: '#00FF00', bodyColor: '#2C1810', neckColor: '#FFE4E1', eyeStyle: 'dash' },
+    { name: 'Ruby Luxurious', color: '#FF1493', saddle: '#FF1493', collar: '#FF1493', bodyColor: '#654321', neckColor: '#FF10F0', eyeStyle: 'dotdash' },
+    { name: 'Sapphire Elite', color: '#00CED1', saddle: '#00CED1', collar: '#00CED1', bodyColor: '#2C1810', neckColor: '#FF69B4', eyeStyle: 'dot' },
+    { name: 'Classic Caviar', color: '#FFA500', saddle: '#FFA500', collar: '#FFA500', bodyColor: '#654321', neckColor: '#F5F5F5', eyeStyle: 'sunglasses' },
+    // New ostriches
+    { name: 'Crypto Gains', color: '#F7931A', saddle: '#F7931A', collar: '#F7931A', bodyColor: '#2C1810', neckColor: '#FFE4E1', eyeStyle: 'dash' },
+    { name: 'Equity Drip', color: '#1E90FF', saddle: '#1E90FF', collar: '#1E90FF', bodyColor: '#654321', neckColor: '#FF10F0', eyeStyle: 'dotdash' },
+    { name: 'Elite Circle', color: '#8A2BE2', saddle: '#8A2BE2', collar: '#8A2BE2', bodyColor: '#2C1810', neckColor: '#FF69B4', eyeStyle: 'dot' },
+    { name: 'Maximum ROI', color: '#32CD32', saddle: '#32CD32', collar: '#32CD32', bodyColor: '#654321', neckColor: '#F5F5F5', eyeStyle: 'sunglasses' },
+    { name: 'Hella Pricey', color: '#FFD700', saddle: '#FFD700', collar: '#FFD700', bodyColor: '#2C1810', neckColor: '#FFE4E1', eyeStyle: 'dash' },
+    { name: 'Value Going Up', color: '#50C878', saddle: '#50C878', collar: '#50C878', bodyColor: '#654321', neckColor: '#FF10F0', eyeStyle: 'dotdash' },
+    { name: 'Big Brain Energy', color: '#00BFFF', saddle: '#00BFFF', collar: '#00BFFF', bodyColor: '#2C1810', neckColor: '#FF69B4', eyeStyle: 'sunglasses' },
+    { name: 'Gospel Feathers', color: '#E6E6FA', saddle: '#E6E6FA', collar: '#E6E6FA', bodyColor: '#654321', neckColor: '#F5F5F5', eyeStyle: 'dot' }
 ];
 
 class Ostrich {
-    constructor(number, colorScheme, currentTimePeriod = null) {
+    constructor(number, colorScheme, currentTimePeriod = null, rng = null) {
         this.number = number;
         this.name = colorScheme.name;
         this.colorScheme = colorScheme; // Store the full color scheme object
@@ -21,13 +34,18 @@ class Ostrich {
         this.collarColor = colorScheme.collar;
         
         // Stats (affect race performance) - wider ranges for more variation
-        this.baseSpeed = randomFloat(0.5, 1.3); // Wider range: 0.5 to 1.3 (was 0.8 to 1.2)
-        this.stamina = randomFloat(0.5, 1.0);   // Wider range: 0.5 to 1.0 (was 0.7 to 1.0)
-        this.consistency = randomFloat(0.4, 1.0); // Wider range: 0.4 to 1.0 (was 0.6 to 1.0)
+        // Use seeded RNG if provided (multiplayer mode), otherwise use Math.random() (offline mode)
+        this.baseSpeed = randomFloat(0.5, 1.3, rng); // Wider range: 0.5 to 1.3 (was 0.8 to 1.2)
+        this.stamina = randomFloat(0.5, 1.0, rng);   // Wider range: 0.5 to 1.0 (was 0.7 to 1.0)
+        this.consistency = randomFloat(0.4, 1.0, rng); // Wider range: 0.4 to 1.0 (was 0.6 to 1.0)
         
         // Time preference - each ostrich has a preferred time of day
         const timePeriods = ['night', 'dawn', 'morning', 'day', 'afternoon', 'dusk', 'evening'];
-        this.preferredTime = timePeriods[Math.floor(Math.random() * timePeriods.length)];
+        const timeIndex = rng ? rng.nextInt(0, timePeriods.length - 1) : Math.floor(Math.random() * timePeriods.length);
+        this.preferredTime = timePeriods[timeIndex];
+        
+        // Store RNG reference for use in update() method
+        this.rng = rng;
         
         // Race state
         this.position = 0; // 0 to 1 (0 = start, 1 = finish)
@@ -119,7 +137,9 @@ class Ostrich {
         this.animationFrame += deltaTime * 0.01 * this.currentSpeed;
 
         // Apply random variations based on consistency (increased from 0.3 to 0.5)
-        const variation = (Math.random() - 0.5) * (1 - this.consistency) * 0.5;
+        // Use seeded RNG if available (multiplayer mode), otherwise use Math.random() (offline mode)
+        const randomValue = this.rng ? this.rng.next() : Math.random();
+        const variation = (randomValue - 0.5) * (1 - this.consistency) * 0.5;
         this.currentSpeed = this.baseSpeed + variation;
 
         // Stamina affects speed over time (increased impact from 0.3 to 0.5)
@@ -130,20 +150,23 @@ class Ostrich {
         // Update position
         this.position += (this.currentSpeed * deltaTime) / raceLength;
         
-        if (this.position >= 1) {
+        // Finish when position reaches or exceeds 1 (with tolerance for floating point precision)
+        // Lowered threshold from 0.9999 to 0.999 to prevent stalling
+        if (this.position >= 0.999) {
             this.position = 1;
             this.finished = true;
         }
     }
 
     reset() {
-        this.position = 0;
-        this.speed = 0;
+        // Explicitly reset to 0 to avoid floating point accumulation issues
+        this.position = 0.0;
+        this.speed = 0.0;
         this.currentSpeed = this.baseSpeed;
         this.finished = false;
         this.finishTime = null;
         this.finishPosition = null;
-        this.animationFrame = 0;
+        this.animationFrame = 0.0;
     }
 
     getDisplayX(canvasWidth, trackWidth) {
@@ -163,10 +186,25 @@ class OstrichManager {
         // Don't initialize here - wait for time period to be available
     }
 
-    initializeOstriches(currentTimePeriod = null) {
+    initializeOstriches(currentTimePeriod = null, rng = null) {
         this.ostriches = [];
+        
+        // Randomly select 8 ostriches from the full pool
+        const availableOstriches = [...OSTRICH_COLORS];
+        const selectedOstriches = [];
+        
+        // Use seeded RNG if provided (multiplayer), otherwise Math.random() (offline)
         for (let i = 0; i < 8; i++) {
-            const ostrich = new Ostrich(i + 1, OSTRICH_COLORS[i], currentTimePeriod);
+            const randomIndex = rng 
+                ? rng.nextInt(0, availableOstriches.length - 1)
+                : Math.floor(Math.random() * availableOstriches.length);
+            
+            selectedOstriches.push(availableOstriches.splice(randomIndex, 1)[0]);
+        }
+        
+        // Create ostrich instances with numbers 1-8
+        for (let i = 0; i < 8; i++) {
+            const ostrich = new Ostrich(i + 1, selectedOstriches[i], currentTimePeriod, rng);
             this.ostriches.push(ostrich);
         }
     }

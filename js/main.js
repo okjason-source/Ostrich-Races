@@ -18,6 +18,16 @@ window.addEventListener('DOMContentLoaded', () => {
     // Set up event listeners
     setupEventListeners();
     
+    // Update sprite toggle button appearance based on loaded preference
+    const spriteToggleBtn = document.getElementById('sprite-toggle');
+    if (spriteToggleBtn && renderer) {
+        if (renderer.useImageSprites) {
+            spriteToggleBtn.classList.remove('drawn-mode');
+        } else {
+            spriteToggleBtn.classList.add('drawn-mode');
+        }
+    }
+    
     // Initial render
     game.race.render();
     
@@ -101,5 +111,54 @@ function setupEventListeners() {
     document.getElementById('new-race-btn').addEventListener('click', () => {
         game.newRace();
     });
+    
+    // Betting bot toggle (also acts as mode selector in multiplayer)
+    document.getElementById('bot-toggle').addEventListener('click', () => {
+        if (game.bettingBot) {
+            const wasEnabled = game.bettingBot.enabled;
+            game.bettingBot.toggle();
+            
+            // In multiplayer, update player mode on server
+            if (game.isMultiplayer && game.multiplayerClient) {
+                const newMode = game.bettingBot.enabled ? 'bot' : 'human';
+                game.setPlayerMode(newMode);
+            }
+        }
+    });
+    
+    // Betting bot full auto checkbox
+    const fullAutoCheckbox = document.getElementById('bot-fullauto-checkbox');
+    if (fullAutoCheckbox) {
+        fullAutoCheckbox.addEventListener('change', (e) => {
+            if (game.bettingBot) {
+                game.bettingBot.fullAuto = e.target.checked;
+                // Save state to localStorage
+                game.bettingBot.saveFullAutoState();
+                game.bettingBot.updateUI();
+                // If just enabled, immediately trigger auto run
+                if (game.bettingBot.fullAuto && game.bettingBot.enabled) {
+                    game.bettingBot.autoRun();
+                }
+            }
+        });
+    }
+    
+    // Bot hide/show stats button
+    const botHideBtn = document.getElementById('bot-hide-btn');
+    if (botHideBtn) {
+        botHideBtn.addEventListener('click', () => {
+            if (game.bettingBot) {
+                game.bettingBot.toggleStatsVisibility();
+            }
+        });
+    }
+    
+    // Ready button (multiplayer)
+    const readyBtn = document.getElementById('ready-btn');
+    if (readyBtn) {
+        readyBtn.addEventListener('click', () => {
+            game.markReady();
+        });
+    }
 }
 

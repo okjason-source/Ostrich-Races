@@ -118,8 +118,31 @@ class SpriteRenderer {
         this.sprites = new Map();
         this.ostrichImage = null;
         this.imageLoaded = false;
-        this.useImageSprites = true; // Toggle for sprite type
+        // Load sprite type preference from localStorage, default to true (image sprites)
+        this.useImageSprites = this.loadSpriteTypePreference();
         this.loadOstrichImage();
+    }
+    
+    // Load sprite type preference from localStorage
+    loadSpriteTypePreference() {
+        try {
+            const saved = localStorage.getItem('ostrich_sprite_type');
+            if (saved !== null) {
+                return saved === 'image';
+            }
+        } catch (error) {
+            console.warn('Failed to load sprite type preference:', error);
+        }
+        return true; // Default to image sprites
+    }
+    
+    // Save sprite type preference to localStorage
+    saveSpriteTypePreference() {
+        try {
+            localStorage.setItem('ostrich_sprite_type', this.useImageSprites ? 'image' : 'drawn');
+        } catch (error) {
+            console.warn('Failed to save sprite type preference:', error);
+        }
     }
 
     loadOstrichImage() {
@@ -150,7 +173,7 @@ class SpriteRenderer {
     }
 
     // Draw animated ostrich from the side with leg animation
-    drawOstrich(x, y, width, height, colorScheme, number, animationFrame = 0) {
+    drawOstrich(x, y, width, height, colorScheme, number, animationFrame = 0, ostrich = null) {
         this.ctx.save();
         
         if (this.useImageSprites && this.imageLoaded && this.ostrichImage) {
@@ -158,7 +181,7 @@ class SpriteRenderer {
             this.drawAnimatedOstrichFromImage(x, y, width, height, colorScheme, number, animationFrame);
         } else {
             // Use simple drawn sprites
-            this.drawSimpleOstrich(x, y, width, height, colorScheme, number, animationFrame);
+            this.drawSimpleOstrich(x, y, width, height, colorScheme, number, animationFrame, ostrich);
         }
         
         this.ctx.restore();
@@ -166,6 +189,7 @@ class SpriteRenderer {
     
     toggleSpriteType() {
         this.useImageSprites = !this.useImageSprites;
+        this.saveSpriteTypePreference(); // Save preference when toggled
         return this.useImageSprites;
     }
 
@@ -245,20 +269,35 @@ class SpriteRenderer {
         this.ctx.fillText(number, x + width * 0.45 + badgeSize / 2, saddleY + badgeSize / 2 + 2);
     }
 
-    drawSimpleOstrich(x, y, width, height, colorScheme, number, animationFrame) {
+    drawSimpleOstrich(x, y, width, height, colorScheme, number, animationFrame, ostrich = null) {
         // Simple side-view ostrich with animated legs (facing right)
-        // Realistic colors: brown/black body, white/pink neck/head/legs
+        // Realistic colors: brown/black body, white/pink/neon pink neck/head/legs
         const legOffset = Math.sin(animationFrame * 0.3) * 5;
         const legOffset2 = Math.sin(animationFrame * 0.3 + Math.PI) * 5;
         
-        // Alternate between brown and black for body variety
-        const bodyColor = number % 2 === 0 ? '#654321' : '#2C1810'; // Brown or dark brown/black
-        const neckColor = number % 2 === 0 ? '#F5F5F5' : '#FFE4E1'; // White or light pink
+        // Use permanent visual features from ostrich if available, otherwise fall back to number-based
+        const bodyColor = ostrich && ostrich.bodyColor ? ostrich.bodyColor : (number % 2 === 0 ? '#654321' : '#2C1810');
+        const neckColor = ostrich && ostrich.neckColor ? ostrich.neckColor : (
+            number === 2 || number === 6 || number === 10 || number === 14 ? '#FF10F0' :
+            number === 3 || number === 7 || number === 11 || number === 15 ? '#FF69B4' :
+            number % 2 === 0 ? '#F5F5F5' : '#FFE4E1'
+        );
+        const eyeStyle = ostrich && ostrich.eyeStyle ? ostrich.eyeStyle : (
+            number === 1 || number === 4 || number === 7 ? 'dot' :
+            number === 2 || number === 5 || number === 8 ? 'dash' :
+            number === 9 || number === 12 || number === 15 ? 'sunglasses' : 'dotdash'
+        );
         
         // Body (oval)
         this.ctx.fillStyle = bodyColor;
         this.ctx.beginPath();
         this.ctx.ellipse(x + width * 0.5, y + height * 0.5, width * 0.3, height * 0.2, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        // Tail (small ellipse behind body, on the left side)
+        this.ctx.fillStyle = bodyColor;
+        this.ctx.beginPath();
+        this.ctx.ellipse(x + width * 0.2, y + height * 0.5, width * 0.08, height * 0.12, 0, 0, Math.PI * 2);
         this.ctx.fill();
         
         // Long neck (positioned for facing right) - white/pink
@@ -270,22 +309,46 @@ class SpriteRenderer {
         this.ctx.ellipse(x + width * 0.71, y + height * 0.08, width * 0.12, height * 0.1, 0, 0, Math.PI * 2);
         this.ctx.fill();
         
-        // Eyes - variety based on ostrich number (all black)
+        // Eyes - variety based on permanent eyeStyle (all black)
         this.ctx.fillStyle = '#000';
         const eyeX = x + width * 0.75;
         const eyeY = y + height * 0.08;
         const eyeSize = width * 0.02;
         
-        if (number === 1 || number === 4 || number === 7) {
+        if (eyeStyle === 'dot') {
             // Just dots
             this.ctx.beginPath();
             this.ctx.arc(eyeX, eyeY, eyeSize, 0, Math.PI * 2);
             this.ctx.fill();
-        } else if (number === 2 || number === 5 || number === 8) {
+        } else if (eyeStyle === 'dash') {
             // Just dashes
             this.ctx.fillRect(eyeX - eyeSize * 1.5, eyeY - eyeSize * 0.5, eyeSize * 3, eyeSize);
+        } else if (eyeStyle === 'sunglasses') {
+            // Sunglasses - cool look (smaller, more proportional)
+            const lensWidth = eyeSize * 1.8;
+            const lensHeight = eyeSize * 1.2;
+            const lensSpacing = eyeSize * 0.5;
+            
+            // Left lens
+            this.ctx.fillStyle = '#1a1a1a'; // Dark gray/black for lenses
+            this.ctx.fillRect(eyeX - lensWidth - lensSpacing, eyeY - lensHeight * 0.5, lensWidth, lensHeight);
+            
+            // Right lens
+            this.ctx.fillRect(eyeX + lensSpacing, eyeY - lensHeight * 0.5, lensWidth, lensHeight);
+            
+            // Bridge between lenses
+            this.ctx.fillStyle = '#000';
+            this.ctx.fillRect(eyeX - lensSpacing * 0.5, eyeY - lensHeight * 0.25, lensSpacing, lensHeight * 0.5);
+            
+            // Frame outline for style
+            this.ctx.strokeStyle = '#000';
+            this.ctx.lineWidth = 1;
+            // Left lens frame
+            this.ctx.strokeRect(eyeX - lensWidth - lensSpacing, eyeY - lensHeight * 0.5, lensWidth, lensHeight);
+            // Right lens frame
+            this.ctx.strokeRect(eyeX + lensSpacing, eyeY - lensHeight * 0.5, lensWidth, lensHeight);
         } else {
-            // Dash merged with dot (numbers 3 and 6)
+            // Dash merged with dot (dotdash)
             // Dot
             this.ctx.beginPath();
             this.ctx.arc(eyeX, eyeY, eyeSize, 0, Math.PI * 2);

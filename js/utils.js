@@ -9,11 +9,39 @@ function formatMoney(amount) {
     }).format(amount);
 }
 
-function randomFloat(min, max) {
+// Seeded Random Number Generator for deterministic multiplayer simulation
+class SeededRandom {
+    constructor(seed) {
+        this.seed = seed || Date.now();
+    }
+    
+    next() {
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        return this.seed / 233280;
+    }
+    
+    nextFloat(min, max) {
+        return min + (max - min) * this.next();
+    }
+    
+    nextInt(min, max) {
+        return Math.floor(this.nextFloat(min, max + 1));
+    }
+}
+
+// Random functions that support optional seeded RNG for multiplayer
+// If rng is provided (multiplayer mode), use it; otherwise use Math.random() (offline mode)
+function randomFloat(min, max, rng = null) {
+    if (rng && rng instanceof SeededRandom) {
+        return rng.nextFloat(min, max);
+    }
     return Math.random() * (max - min) + min;
 }
 
-function randomInt(min, max) {
+function randomInt(min, max, rng = null) {
+    if (rng && rng instanceof SeededRandom) {
+        return rng.nextInt(min, max);
+    }
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 

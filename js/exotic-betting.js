@@ -48,7 +48,7 @@ class ExoticBettingSystem {
             results: results,
             totalWinnings: totalWinnings,
             totalLosses: totalLosses,
-            netProfit: totalWinnings - (totalWinnings > 0 ? 0 : this.getTotalExoticBetAmount())
+            netProfit: totalWinnings - this.getTotalExoticBetAmount()
         };
     }
 

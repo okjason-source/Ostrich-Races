@@ -61,7 +61,8 @@ class BettingSystem {
                 case 'show':
                     // Must finish 1st, 2nd, or 3rd
                     won = ostrichPosition >= 1 && ostrichPosition <= 3;
-                    multiplier = baseOdds * 0.25; // 25% of win odds
+                    // Show pays 30% of win odds, but minimum 1.1:1 (10% profit) to ensure you always profit
+                    multiplier = Math.max(baseOdds * 0.3, 1.1);
                     break;
             }
 

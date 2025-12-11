@@ -8,9 +8,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Ostrich Races">
+    <meta name="apple-mobile-web-app-title" content="Ostrich Palace Races">
     
-    <title>Ostrich Races - Billionaire Mindset</title>
+    <title>Ostrich Palace Races - Billionaire Mindset</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
@@ -34,10 +34,15 @@
         </div>
         
         <header>
-            <h1>💸 OSTRICH RACES 💸</h1>
-            <div id="bankroll-display">
-                <span class="money-icon">💰</span>
-                <span id="bankroll-amount">$1,000,000</span>
+            <h1>💸 OSTRICH PALACE RACES 💸</h1>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="bankroll-display">
+                    <span class="money-icon">💰</span>
+                    <span id="bankroll-amount">$1,000,000</span>
+                </div>
+                <button id="open-host-controls-btn" class="host-controls-btn" title="Open Host Controls" style="display: none;">
+                    Host
+                </button>
             </div>
         </header>
         
@@ -56,11 +61,27 @@
                     <div class="bet-controls-row">
                         <input type="number" id="bet-amount" placeholder="Bet amount" min="1" value="1000000">
                         <button id="place-bet-btn">Bet</button>
+                        <button id="ready-btn" class="ready-btn hidden" style="display: none;">Ready</button>
                     </div>
                 </div>
                 <div id="current-bets">
                     <h3>Your Bets</h3>
                     <div id="bets-list"></div>
+                </div>
+                
+                <!-- Betting Bot Section -->
+                <div id="betting-bot-section">
+                    <div class="bot-controls-row">
+                        <button id="bot-toggle" class="bot-toggle">🤖 Bot: OFF</button>
+                        <div class="bot-options" id="bot-options" style="display: none;">
+                            <label class="bot-fullauto-checkbox">
+                                <input type="checkbox" id="bot-fullauto-checkbox">
+                                <span>⚡ Full Auto</span>
+                            </label>
+                            <button id="bot-hide-btn" class="bot-hide-btn" title="Hide/Show Stats">▼</button>
+                        </div>
+                    </div>
+                    <div id="bot-stats" class="bot-stats"></div>
                 </div>
                 
                 <!-- Exotic Bets Section -->
@@ -127,10 +148,16 @@
             <div id="race-area" class="panel">
                 <canvas id="game-canvas"></canvas>
                 <div id="race-info">
-                    <div id="race-status">Waiting for bets...</div>
+                    <div id="race-status">Waiting for Bets...</div>
                     <div id="race-timer"></div>
                     <button id="sprite-toggle" class="sprite-toggle-btn" title="Toggle ostrich style">💸</button>
                     <div id="bm-tab-display">B-M Tab: <span id="bm-tab-count">0</span></div>
+                    <div id="llm-indicator" class="llm-indicator">
+                        <button id="llm-expert-btn" class="llm-expert-btn" title="Get Expert Rundown">
+                            <span class="llm-dot"></span>
+                            <span class="llm-model-name"></span>
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -138,20 +165,28 @@
             <div id="results-panel" class="panel hidden">
                 <h2>Race Results</h2>
                 <div id="finishing-order"></div>
+                <div id="bets-summary"></div>
                 <div id="payout-info"></div>
                 <button id="new-race-btn" class="primary-btn">New Race</button>
             </div>
         </div>
     </div>
     
+    <script src="config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/sound.js"></script>
     <script src="js/day-night.js"></script>
     <script src="js/graphics.js"></script>
     <script src="js/ostrich.js"></script>
+    <script src="js/multiplayer-client.js"></script>
+    <!-- Host client and LLM are optional - comment out to exclude from deployment -->
+    <!-- <script src="js/host-client.js"></script> -->
+    <script src="js/events.js"></script>
+    <!-- <script src="js/llm.js"></script> -->
     <script src="js/betting.js"></script>
     <script src="js/exotic-betting.js"></script>
+    <script src="js/betting-bot.js"></script>
     <script src="js/race.js"></script>
     <script src="js/game.js"></script>
     <script src="js/main.js"></script>
