@@ -446,7 +446,7 @@ class Race {
             const canvasWidth = canvasRect.width;
             
             // Scale font sizes and positions based on canvas size
-            const tajFontSize = isMobile ? Math.min(60, canvasHeight * 0.15) : 120;
+            const tajFontSize = isMobile ? Math.min(120, canvasHeight * 0.3) : 120;
             const titleFontSize = isMobile ? Math.min(20, canvasWidth * 0.05) : 48;
             const subtitleFontSize = isMobile ? Math.min(14, canvasWidth * 0.035) : 24;
             const diamondSize = isMobile ? 4 : 8;
